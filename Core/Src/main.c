@@ -1,30 +1,29 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : main.c
+ * @brief          : Main program body
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-//For character
-#include <stdio.h> //sprintf
-#include <string.h> //strlen
+#include <stdio.h>
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -56,7 +55,8 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
-
+void UARTRecieveAndResponsePolling();
+int16_t UARTRecieveIT();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -102,20 +102,33 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+	while (1)
+	{
 		/*Method 1 Polling Mode*/
 
-		UARTRecieveAndResponsePolling();
+//		UARTRecieveAndResponsePolling();
 
-    /* USER CODE END WHILE */
+		/*Method 2 Interrupt Mode*/
+//		HAL_UART_Receive_IT(&huart2,  (uint8_t*)RxDataBuffer, 32);
 
-    /* USER CODE BEGIN 3 */
+		/*Method 2 W/ 1 Char Received*/
+//		int16_t inputchar = UARTRecieveIT();
+//		if(inputchar!=-1)
+//		{
+
+//			sprintf(TxDataBuffer, "ReceivedChar:[%c]\r\n", inputchar);
+//			HAL_UART_Transmit(&huart2, (uint8_t*)TxDataBuffer, strlen(TxDataBuffer), 1000);
+//		}
+
+
 
 		/*This section just simmulate Work Load*/
 		HAL_Delay(100);
 		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-  }
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+	}
   /* USER CODE END 3 */
 }
 
@@ -232,20 +245,33 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void UARTRecieveAndResponsePolling()
 {
-	//create buffer
 	char Recieve[32]={0};
 
-	//receive
 	HAL_UART_Receive(&huart2, (uint8_t*)Recieve, 32, 1000);
 
-	//create feedback text
 	sprintf(TxDataBuffer, "Received:[%s]\r\n", Recieve);
-
-	//send feedback text
 	HAL_UART_Transmit(&huart2, (uint8_t*)TxDataBuffer, strlen(TxDataBuffer), 1000);
 
 }
 
+
+int16_t UARTRecieveIT()
+{
+	static uint32_t dataPos =0;
+	int16_t data=-1;
+	if(huart2.RxXferSize - huart2.RxXferCount!=dataPos)
+	{
+		data=RxDataBuffer[dataPos];
+		dataPos= (dataPos+1)%huart2.RxXferSize;
+	}
+	return data;
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	sprintf(TxDataBuffer, "Received:[%s]\r\n", RxDataBuffer);
+	HAL_UART_Transmit(&huart2, (uint8_t*)TxDataBuffer, strlen(TxDataBuffer), 1000);
+}
 /* USER CODE END 4 */
 
 /**
@@ -255,11 +281,11 @@ void UARTRecieveAndResponsePolling()
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
-  while (1)
-  {
-  }
+	/* User can add his own implementation to report the HAL error return state */
+	__disable_irq();
+	while (1)
+	{
+	}
   /* USER CODE END Error_Handler_Debug */
 }
 
