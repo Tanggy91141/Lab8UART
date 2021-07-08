@@ -59,6 +59,9 @@ static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
 void UARTRecieveAndResponsePolling();
 int16_t UARTRecieveIT();
+void Print_Main_Menu();
+void Print_Menu_0();
+void Print_Menu_1();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -126,22 +129,22 @@ int main(void)
 
 /////////////////////////////////////START///////////////////////////////////////
 
-//		HAL_UART_Receive_IT(&huart2,  (uint8_t*)RxDataBuffer, 32);
+		HAL_UART_Receive_IT(&huart2,  (uint8_t*)RxDataBuffer, 32);
 
-//		inputchar = UARTRecieveIT();		//Focus on this character
-//		if(inputchar!=-1)
-//		{
-//			sprintf(TxDataBuffer, "ReceivedChar:[%c]\r\n", inputchar);
-//			HAL_UART_Transmit(&huart2, (uint8_t*)TxDataBuffer, strlen(TxDataBuffer), 1000);
-//
-//
-//
-//
-//
-//
-//
-//
-//		}
+		inputchar = UARTRecieveIT();		//Focus on this character
+		if(inputchar!=-1)
+		{
+			sprintf(TxDataBuffer, "ReceivedChar:[%c]\r\n", inputchar);
+			HAL_UART_Transmit(&huart2, (uint8_t*)TxDataBuffer, strlen(TxDataBuffer), 1000);
+
+
+			Print_Menu_0();
+
+			Print_Menu_1();
+
+			Print_Main_Menu();
+
+		}
 
 
 
@@ -269,16 +272,16 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-void UARTRecieveAndResponsePolling()
-{
-	char Recieve[32]={0};
-
-	HAL_UART_Receive(&huart2, (uint8_t*)Recieve, 32, 1000);
-
-	sprintf(TxDataBuffer, "Received:[%s]\r\n", Recieve);
-	HAL_UART_Transmit(&huart2, (uint8_t*)TxDataBuffer, strlen(TxDataBuffer), 1000);
-
-}
+//void UARTRecieveAndResponsePolling()
+//{
+//	char Recieve[32]={0};
+//
+//	HAL_UART_Receive(&huart2, (uint8_t*)Recieve, 32, 1000);
+//
+//	sprintf(TxDataBuffer, "Received:[%s]\r\n", Recieve);
+//	HAL_UART_Transmit(&huart2, (uint8_t*)TxDataBuffer, strlen(TxDataBuffer), 1000);
+//
+//}
 
 
 int16_t UARTRecieveIT()
@@ -298,6 +301,30 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	sprintf(TxDataBuffer, "Received:[%s]\r\n", RxDataBuffer);
 	HAL_UART_Transmit(&huart2, (uint8_t*)TxDataBuffer, strlen(TxDataBuffer), 1000);
 }
+
+////////////////////Print Menu////////////////////
+void Print_Main_Menu()
+{
+	  char Main_Menu[]="Main_Menu\r\n Choice_0\r\n Choice_1\r\n";
+	  HAL_UART_Transmit(&huart2, (uint8_t*)Main_Menu, strlen(Main_Menu),10);
+
+}
+
+void Print_Menu_0()
+{
+	  char Menu_0[]="Menu_0\r\n Choice_0\r\n Choice_1\r\n";
+	  HAL_UART_Transmit(&huart2, (uint8_t*)Menu_0, strlen(Menu_0),10);
+
+}
+
+void Print_Menu_1()
+{
+	  char Menu_1[]="Menu_1\r\n Choice_0\r\n Choice_1\r\n";
+	  HAL_UART_Transmit(&huart2, (uint8_t*)Menu_1, strlen(Menu_1),10);
+
+}
+
+
 /* USER CODE END 4 */
 
 /**
