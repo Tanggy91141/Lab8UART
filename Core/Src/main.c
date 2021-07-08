@@ -51,20 +51,16 @@ char RxDataBuffer[32] =
 
 int16_t inputchar = 0;
 
-enum	//main state
-{
-	mainState_WaitInput = 10,
-	mainState_Mode_0 = 20,
-	mainState_Mode_1 = 30
-};
+uint8_t state = 10;
 
-enum	//state 0
+enum	//Menu state
 {
-	state_0_WaitInput = 10,
-	Mode_0_a = 20,
-	Mode_0_s= 30,
-	Mode_0_d = 40,
-	Mode_0_x= 50
+	printMain_Menu = 10,
+	mainMenu_WaitInput = 20,
+	printMode_0_Menu = 30,
+	subMenu_0_WaitInput = 40,
+	printMode_1_Menu = 50,
+	subMenu_1_WaitInput = 60,
 };
 
 /* USER CODE END PV */
@@ -76,9 +72,12 @@ static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
 void UARTRecieveAndResponsePolling();
 int16_t UARTRecieveIT();
+
 void Print_Main_Menu();
 void Print_Menu_0();
 void Print_Menu_1();
+void Print_Error();
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -116,10 +115,10 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-  {
-  char temp[]="HELLO WORLD\r\n please type something to test UART\r\n";
-  HAL_UART_Transmit(&huart2, (uint8_t*)temp, strlen(temp),10);
-  }
+//  {
+//  char temp[]="HELLO WORLD\r\n please type something to test UART\r\n";
+//  HAL_UART_Transmit(&0huart2, (uint8_t*)temp, strlen(temp),10);
+//  }
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -153,13 +152,75 @@ int main(void)
 		{
 			sprintf(TxDataBuffer, "ReceivedChar:[%c]\r\n", inputchar);
 			HAL_UART_Transmit(&huart2, (uint8_t*)TxDataBuffer, strlen(TxDataBuffer), 1000);
-
-
-
-
-
-
 		}
+
+		switch (state)
+		{
+		case printMain_Menu:
+			Print_Main_Menu();
+			state = mainMenu_WaitInput;
+			break;
+		case mainMenu_WaitInput: 			// 0, 1, Error
+			switch (inputchar)
+			{
+				case '0':
+					state = printMode_0_Menu;
+					break;
+				case '1':
+					state = printMode_1_Menu;
+					break;
+				default:
+					Print_Error();
+					state = printMain_Menu;
+					break;
+			}
+			break;
+		case printMode_0_Menu:
+			Print_Menu_0();
+			state = subMenu_0_WaitInput;
+			break;
+		case subMenu_0_WaitInput:			// a, s, d, x, Error
+			switch (inputchar)
+			{
+				case 'a':
+					// action
+					state = printMode_0_Menu;
+					break;
+				case 's':
+					// action
+					state = printMode_0_Menu;
+					break;
+				case 'd':
+					// action
+					state = printMode_0_Menu;
+					break;
+				case 'x':
+					state = mainMenu_WaitInput;
+					break;
+				default:
+					Print_Error();
+					state = printMode_0_Menu;
+					break;
+			}
+			break;
+		case printMode_1_Menu:
+			Print_Menu_1();
+			state = subMenu_1_WaitInput;
+			break;
+		case subMenu_1_WaitInput:			// x, Error
+			switch (inputchar)
+			{
+				case 'x':
+					state = mainMenu_WaitInput;
+					break;
+				default:
+					Print_Error();
+					state = printMode_1_Menu;
+					break;
+			}
+			break;
+		}
+
 
 
 
@@ -339,6 +400,12 @@ void Print_Menu_1()
 
 }
 
+void Print_Error()
+{
+	  char Eror[]="Error : Out of choice\r\n";
+	  HAL_UART_Transmit(&huart2, (uint8_t*)Eror, strlen(Eror),10);
+
+}
 
 /* USER CODE END 4 */
 
