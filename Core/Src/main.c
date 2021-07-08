@@ -63,6 +63,12 @@ enum	//Menu state
 	subMenu_1_WaitInput = 60,
 };
 
+//--------------------LED
+uint8_t LED_D = 0 ;				// 1 = LED on, 0 = LED off
+uint8_t LED_On = 1 ;			// 1 = LED on, 0 = LED off (in case LED_D = 0) Blink
+uint32_t TimeStamp = 0 ;		// time stamp
+uint16_t Half_Period = 500;  	//Half of 1 Hz
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -143,14 +149,14 @@ int main(void)
 //		HAL_Delay(100);
 //		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 
-/////////////////////////////////////START///////////////////////////////////////
+/////////////////////////////////////STATE///////////////////////////////////////
 
 		HAL_UART_Receive_IT(&huart2,  (uint8_t*)RxDataBuffer, 32);
 
 		inputchar = UARTRecieveIT();		//Focus on this character
 		if(inputchar!=-1)
 		{
-			sprintf(TxDataBuffer, "ReceivedChar:[%c]\r\n", inputchar);
+			sprintf(TxDataBuffer, "You press:[%c]\r\n", inputchar);
 			HAL_UART_Transmit(&huart2, (uint8_t*)TxDataBuffer, strlen(TxDataBuffer), 1000);
 		}
 
@@ -195,7 +201,8 @@ int main(void)
 					state = printMode_0_Menu;
 					break;
 				case 'd':
-					// action
+					if (LED_D == 1) {LED_D = 0;}
+					else {LED_D = 1;}
 					state = printMode_0_Menu;
 					break;
 				case 'x':
@@ -225,6 +232,30 @@ int main(void)
 					break;
 			}
 			break;
+		}
+
+/////////////////////////////////////LED///////////////////////////////////////
+		if (LED_D == 0)
+		{
+			if (HAL_GetTick() - TimeStamp >= Half_Period)
+			{
+				TimeStamp = HAL_GetTick();
+				if (LED_On == 1)
+				{
+					HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+					LED_On = 0;
+				}
+				else
+				{
+					HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+					LED_On = 1;
+				}
+			}
+		}
+		else
+		{
+			HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+			LED_On = 0;
 		}
 
 
