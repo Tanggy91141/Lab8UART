@@ -50,6 +50,23 @@ char RxDataBuffer[32] =
 { 0 };
 
 int16_t inputchar = 0;
+
+enum	//main state
+{
+	mainState_WaitInput = 10,
+	mainState_Mode_0 = 20,
+	mainState_Mode_1 = 30
+};
+
+enum	//state 0
+{
+	state_0_WaitInput = 10,
+	Mode_0_a = 20,
+	Mode_0_s= 30,
+	Mode_0_d = 40,
+	Mode_0_x= 50
+};
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -138,11 +155,9 @@ int main(void)
 			HAL_UART_Transmit(&huart2, (uint8_t*)TxDataBuffer, strlen(TxDataBuffer), 1000);
 
 
-			Print_Menu_0();
 
-			Print_Menu_1();
 
-			Print_Main_Menu();
+
 
 		}
 
