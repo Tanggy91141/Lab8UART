@@ -48,6 +48,10 @@ char TxDataBuffer[32] =
 { 0 };
 char RxDataBuffer[32] =
 { 0 };
+char fq[50] =
+{ 0 };
+
+uint8_t B1[2] = {0};
 
 int16_t inputchar = 0;
 
@@ -67,7 +71,10 @@ enum	//Menu state
 uint8_t LED_D = 0 ;				// 1 = LED on, 0 = LED off
 uint8_t LED_On = 1 ;			// 1 = LED on, 0 = LED off (in case LED_D = 0) Blink
 uint32_t TimeStamp = 0 ;		// time stamp
-uint16_t Half_Period = 500;  	//Half of 1 Hz
+
+int Freq = 1 ;			// Default 1 Hz
+float Period = 1000 ;		// Period for 1 Hz
+float Half_Period = 500 ;  	// Half of 1 Hz
 
 /* USER CODE END PV */
 
@@ -83,6 +90,10 @@ void Print_Main_Menu();
 void Print_Menu_0();
 void Print_Menu_1();
 void Print_Error();
+
+void Print_fq();
+void Print_Back();
+void Print_OnOff();
 
 /* USER CODE END PFP */
 
@@ -193,19 +204,24 @@ int main(void)
 				case -1 :
 					break;
 				case 'a':
-					// action
+					Freq = Freq + 1 ;
+					Print_fq();
 					state = printMode_0_Menu;
 					break;
 				case 's':
-					// action
+					if (Freq == 0) {Freq = 0;}
+					else {Freq = Freq - 1 ;}
+					Print_fq();
 					state = printMode_0_Menu;
 					break;
 				case 'd':
 					if (LED_D == 1) {LED_D = 0;}
 					else {LED_D = 1;}
+					Print_OnOff();
 					state = printMode_0_Menu;
 					break;
 				case 'x':
+					Print_Back();
 					state = printMain_Menu;
 					break;
 				default:
@@ -224,6 +240,7 @@ int main(void)
 				case -1 :
 					break;
 				case 'x':
+					Print_Back();
 					state = printMain_Menu;
 					break;
 				default:
@@ -231,7 +248,29 @@ int main(void)
 					state = printMode_1_Menu;
 					break;
 			}
+
+
+			/////////////////////////////B1///////////////////////////////////////
+			B1[0] = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+			if(B1[0] == 0 && B1[1] == 1)
+			{
+				char B[]=("B1 = Press\r\n");
+				HAL_UART_Transmit(&huart2, (uint8_t*)B, strlen(B), 1000);
+				state = printMode_1_Menu;
+			}
+			else if(B1[1] == 0 && B1[0] == 1)
+			{
+				char B[]=("B1 = Unpress\r\n");
+				HAL_UART_Transmit(&huart2, (uint8_t*)B, strlen(B), 1000);
+				state = printMode_1_Menu;
+			}
+			B1[1] = B1[0] ;
+
+
 			break;
+
+
+
 		}
 
 /////////////////////////////////////LED///////////////////////////////////////
@@ -257,6 +296,7 @@ int main(void)
 			HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
 			LED_On = 0;
 		}
+
 
 
     /* USER CODE END WHILE */
@@ -363,7 +403,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
@@ -403,28 +443,65 @@ int16_t UARTRecieveIT()
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	sprintf(TxDataBuffer, "Received:[%s]\r\n", RxDataBuffer);
+	//sprintf(TxDataBuffer, "Received:[%s]\r\n", RxDataBuffer);
 	HAL_UART_Transmit(&huart2, (uint8_t*)TxDataBuffer, strlen(TxDataBuffer), 1000);
 }
 
 ////////////////////Print Menu////////////////////
 void Print_Main_Menu()
 {
-	  char Main_Menu[]="Main_Menu\r\n Choice_0\r\n Choice_1\r\n";
+	  char Main_Menu[]="Main_Menu\r\n "
+			  "__press [0] for go to Menu_0\r\n "
+			  "__press [1] for go to Menu_1\r\n"
+			  "\r\n-----------------------------\r\n";
 	  HAL_UART_Transmit(&huart2, (uint8_t*)Main_Menu, strlen(Main_Menu),10);
 
 }
 
 void Print_Menu_0()
 {
-	  char Menu_0[]="Menu_0\r\n Choice_0\r\n Choice_1\r\n";
+	  char Menu_0[]="Menu_0\r\n "
+			  "__press [a] for Freq + 1Hz\r\n "
+			  "__press [s] for Freq - 1Hz\r\n"
+			  "__press [d] for on/off LED\r\n"
+			  "__press [x] for back to main menu\r\n"
+			  "\r\n-----------------------------\r\n";
 	  HAL_UART_Transmit(&huart2, (uint8_t*)Menu_0, strlen(Menu_0),10);
+
+}
+
+void Print_fq()
+{
+	  Period = (1.0/Freq)*1000.0 ;		//millisecond
+	  Half_Period = Period/2.0 ;
+
+      //char fq[]= ("frequency of LED is: %d \r\n", Freq);
+	  sprintf(fq, "frequency of LED is: %d \r\n", Freq);
+	  HAL_UART_Transmit(&huart2, (uint8_t*)fq, strlen(fq),10);
+
+}
+
+void Print_OnOff()
+{
+	if (LED_D == 0)
+	{
+		char D[]="LED is On\r\n";
+		HAL_UART_Transmit(&huart2, (uint8_t*)D, strlen(D),10);
+	}
+	else
+	{
+		char D[]="LED is Off\r\n";
+		HAL_UART_Transmit(&huart2, (uint8_t*)D, strlen(D),10);
+	}
 
 }
 
 void Print_Menu_1()
 {
-	  char Menu_1[]="Menu_1\r\n Choice_0\r\n Choice_1\r\n";
+	  char Menu_1[]="Menu_1\r\n"
+			  "__Show B1 state\r\n"
+			  "__press [x] for back to main menu\r\n"
+			  "\r\n-----------------------------\r\n";
 	  HAL_UART_Transmit(&huart2, (uint8_t*)Menu_1, strlen(Menu_1),10);
 
 }
@@ -433,6 +510,13 @@ void Print_Error()
 {
 	  char Eror[]="Error : Out of choice\r\n";
 	  HAL_UART_Transmit(&huart2, (uint8_t*)Eror, strlen(Eror),10);
+
+}
+
+void Print_Back()
+{
+	  char Back[]="Back to main menu\r\n";
+	  HAL_UART_Transmit(&huart2, (uint8_t*)Back, strlen(Back),10);
 
 }
 
