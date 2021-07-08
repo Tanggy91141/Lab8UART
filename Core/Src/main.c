@@ -163,6 +163,8 @@ int main(void)
 		case mainMenu_WaitInput: 			// 0, 1, Error
 			switch (inputchar)
 			{
+				case -1 :
+					break;
 				case '0':
 					state = printMode_0_Menu;
 					break;
@@ -182,6 +184,8 @@ int main(void)
 		case subMenu_0_WaitInput:			// a, s, d, x, Error
 			switch (inputchar)
 			{
+				case -1 :
+					break;
 				case 'a':
 					// action
 					state = printMode_0_Menu;
@@ -195,7 +199,7 @@ int main(void)
 					state = printMode_0_Menu;
 					break;
 				case 'x':
-					state = mainMenu_WaitInput;
+					state = printMain_Menu;
 					break;
 				default:
 					Print_Error();
@@ -210,8 +214,10 @@ int main(void)
 		case subMenu_1_WaitInput:			// x, Error
 			switch (inputchar)
 			{
+				case -1 :
+					break;
 				case 'x':
-					state = mainMenu_WaitInput;
+					state = printMain_Menu;
 					break;
 				default:
 					Print_Error();
@@ -220,14 +226,6 @@ int main(void)
 			}
 			break;
 		}
-
-
-
-
-
-
-
-
 
 
     /* USER CODE END WHILE */
