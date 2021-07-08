@@ -2040,24 +2040,24 @@ void Print_Main_Menu()
  8001420:	b580      	push	{r7, lr}
  8001422:	b09c      	sub	sp, #112	; 0x70
  8001424:	af00      	add	r7, sp, #0
-	  char Main_Menu[]="Main_Menu\r\n "
+	  char Main_Menu[]="Main_Menu\r\n"
  8001426:	4a0b      	ldr	r2, [pc, #44]	; (8001454 <Print_Main_Menu+0x34>)
  8001428:	1d3b      	adds	r3, r7, #4
  800142a:	4611      	mov	r1, r2
- 800142c:	226b      	movs	r2, #107	; 0x6b
+ 800142c:	2269      	movs	r2, #105	; 0x69
  800142e:	4618      	mov	r0, r3
  8001430:	f002 f95a 	bl	80036e8 <memcpy>
-			  "__press [0] for go to Menu_0\r\n "
+			  "__press [0] for go to Menu_0\r\n"
 			  "__press [1] for go to Menu_1\r\n"
 			  "\r\n-----------------------------\r\n";
-	  HAL_UART_Transmit(&huart2, (uint8_t*)Main_Menu, strlen(Main_Menu),10);
+	  HAL_UART_Transmit(&huart2, (uint8_t*)Main_Menu, strlen(Main_Menu),100);
  8001434:	1d3b      	adds	r3, r7, #4
  8001436:	4618      	mov	r0, r3
  8001438:	f7fe fed2 	bl	80001e0 <strlen>
  800143c:	4603      	mov	r3, r0
  800143e:	b29a      	uxth	r2, r3
  8001440:	1d39      	adds	r1, r7, #4
- 8001442:	230a      	movs	r3, #10
+ 8001442:	2364      	movs	r3, #100	; 0x64
  8001444:	4804      	ldr	r0, [pc, #16]	; (8001458 <Print_Main_Menu+0x38>)
  8001446:	f001 fa3a 	bl	80028be <HAL_UART_Transmit>
 
@@ -2077,26 +2077,26 @@ void Print_Menu_0()
  800145c:	b580      	push	{r7, lr}
  800145e:	b0aa      	sub	sp, #168	; 0xa8
  8001460:	af00      	add	r7, sp, #0
-	  char Menu_0[]="Menu_0\r\n "
+	  char Menu_0[]="Menu_0\r\n"
  8001462:	4a0b      	ldr	r2, [pc, #44]	; (8001490 <Print_Menu_0+0x34>)
  8001464:	1d3b      	adds	r3, r7, #4
  8001466:	4611      	mov	r1, r2
- 8001468:	22a3      	movs	r2, #163	; 0xa3
+ 8001468:	22a1      	movs	r2, #161	; 0xa1
  800146a:	4618      	mov	r0, r3
  800146c:	f002 f93c 	bl	80036e8 <memcpy>
-			  "__press [a] for Freq + 1Hz\r\n "
+			  "__press [a] for Freq + 1Hz\r\n"
 			  "__press [s] for Freq - 1Hz\r\n"
 			  "__press [d] for on/off LED\r\n"
 			  "__press [x] for back to main menu\r\n"
 			  "\r\n-----------------------------\r\n";
-	  HAL_UART_Transmit(&huart2, (uint8_t*)Menu_0, strlen(Menu_0),10);
+	  HAL_UART_Transmit(&huart2, (uint8_t*)Menu_0, strlen(Menu_0),100);
  8001470:	1d3b      	adds	r3, r7, #4
  8001472:	4618      	mov	r0, r3
  8001474:	f7fe feb4 	bl	80001e0 <strlen>
  8001478:	4603      	mov	r3, r0
  800147a:	b29a      	uxth	r2, r3
  800147c:	1d39      	adds	r1, r7, #4
- 800147e:	230a      	movs	r3, #10
+ 800147e:	2364      	movs	r3, #100	; 0x64
  8001480:	4804      	ldr	r0, [pc, #16]	; (8001494 <Print_Menu_0+0x38>)
  8001482:	f001 fa1c 	bl	80028be <HAL_UART_Transmit>
 
@@ -2158,12 +2158,12 @@ void Print_fq()
  80014f6:	490d      	ldr	r1, [pc, #52]	; (800152c <Print_fq+0x94>)
  80014f8:	480d      	ldr	r0, [pc, #52]	; (8001530 <Print_fq+0x98>)
  80014fa:	f002 f909 	bl	8003710 <siprintf>
-	  HAL_UART_Transmit(&huart2, (uint8_t*)fq, strlen(fq),10);
+	  HAL_UART_Transmit(&huart2, (uint8_t*)fq, strlen(fq),100);
  80014fe:	480c      	ldr	r0, [pc, #48]	; (8001530 <Print_fq+0x98>)
  8001500:	f7fe fe6e 	bl	80001e0 <strlen>
  8001504:	4603      	mov	r3, r0
  8001506:	b29a      	uxth	r2, r3
- 8001508:	230a      	movs	r3, #10
+ 8001508:	2364      	movs	r3, #100	; 0x64
  800150a:	4909      	ldr	r1, [pc, #36]	; (8001530 <Print_fq+0x98>)
  800150c:	4809      	ldr	r0, [pc, #36]	; (8001534 <Print_fq+0x9c>)
  800150e:	f001 f9d6 	bl	80028be <HAL_UART_Transmit>
@@ -2199,19 +2199,19 @@ void Print_OnOff()
  8001548:	f107 0314 	add.w	r3, r7, #20
  800154c:	ca07      	ldmia	r2, {r0, r1, r2}
  800154e:	e883 0007 	stmia.w	r3, {r0, r1, r2}
-		HAL_UART_Transmit(&huart2, (uint8_t*)D, strlen(D),10);
+		HAL_UART_Transmit(&huart2, (uint8_t*)D, strlen(D),100);
  8001552:	f107 0314 	add.w	r3, r7, #20
  8001556:	4618      	mov	r0, r3
  8001558:	f7fe fe42 	bl	80001e0 <strlen>
  800155c:	4603      	mov	r3, r0
  800155e:	b29a      	uxth	r2, r3
  8001560:	f107 0114 	add.w	r1, r7, #20
- 8001564:	230a      	movs	r3, #10
+ 8001564:	2364      	movs	r3, #100	; 0x64
  8001566:	480e      	ldr	r0, [pc, #56]	; (80015a0 <Print_OnOff+0x68>)
  8001568:	f001 f9a9 	bl	80028be <HAL_UART_Transmit>
 	{
 		char D[]="LED is Off\r\n";
-		HAL_UART_Transmit(&huart2, (uint8_t*)D, strlen(D),10);
+		HAL_UART_Transmit(&huart2, (uint8_t*)D, strlen(D),100);
 	}
 
 }
@@ -2222,14 +2222,14 @@ void Print_OnOff()
  8001572:	cb0f      	ldmia	r3, {r0, r1, r2, r3}
  8001574:	c407      	stmia	r4!, {r0, r1, r2}
  8001576:	7023      	strb	r3, [r4, #0]
-		HAL_UART_Transmit(&huart2, (uint8_t*)D, strlen(D),10);
+		HAL_UART_Transmit(&huart2, (uint8_t*)D, strlen(D),100);
  8001578:	1d3b      	adds	r3, r7, #4
  800157a:	4618      	mov	r0, r3
  800157c:	f7fe fe30 	bl	80001e0 <strlen>
  8001580:	4603      	mov	r3, r0
  8001582:	b29a      	uxth	r2, r3
  8001584:	1d39      	adds	r1, r7, #4
- 8001586:	230a      	movs	r3, #10
+ 8001586:	2364      	movs	r3, #100	; 0x64
  8001588:	4805      	ldr	r0, [pc, #20]	; (80015a0 <Print_OnOff+0x68>)
  800158a:	f001 f998 	bl	80028be <HAL_UART_Transmit>
 }
@@ -2260,14 +2260,14 @@ void Print_Menu_1()
 			  "__Show B1 state\r\n"
 			  "__press [x] for back to main menu\r\n"
 			  "\r\n-----------------------------\r\n";
-	  HAL_UART_Transmit(&huart2, (uint8_t*)Menu_1, strlen(Menu_1),10);
+	  HAL_UART_Transmit(&huart2, (uint8_t*)Menu_1, strlen(Menu_1),100);
  80015bc:	463b      	mov	r3, r7
  80015be:	4618      	mov	r0, r3
  80015c0:	f7fe fe0e 	bl	80001e0 <strlen>
  80015c4:	4603      	mov	r3, r0
  80015c6:	b29a      	uxth	r2, r3
  80015c8:	4639      	mov	r1, r7
- 80015ca:	230a      	movs	r3, #10
+ 80015ca:	2364      	movs	r3, #100	; 0x64
  80015cc:	4804      	ldr	r0, [pc, #16]	; (80015e0 <Print_Menu_1+0x38>)
  80015ce:	f001 f976 	bl	80028be <HAL_UART_Transmit>
 
@@ -2295,14 +2295,14 @@ void Print_Error()
  80015f2:	c40f      	stmia	r4!, {r0, r1, r2, r3}
  80015f4:	e895 0003 	ldmia.w	r5, {r0, r1}
  80015f8:	e884 0003 	stmia.w	r4, {r0, r1}
-	  HAL_UART_Transmit(&huart2, (uint8_t*)Eror, strlen(Eror),10);
+	  HAL_UART_Transmit(&huart2, (uint8_t*)Eror, strlen(Eror),100);
  80015fc:	463b      	mov	r3, r7
  80015fe:	4618      	mov	r0, r3
  8001600:	f7fe fdee 	bl	80001e0 <strlen>
  8001604:	4603      	mov	r3, r0
  8001606:	b29a      	uxth	r2, r3
  8001608:	4639      	mov	r1, r7
- 800160a:	230a      	movs	r3, #10
+ 800160a:	2364      	movs	r3, #100	; 0x64
  800160c:	4804      	ldr	r0, [pc, #16]	; (8001620 <Print_Error+0x3c>)
  800160e:	f001 f956 	bl	80028be <HAL_UART_Transmit>
 
@@ -2330,14 +2330,14 @@ void Print_Back()
  8001632:	c40f      	stmia	r4!, {r0, r1, r2, r3}
  8001634:	682b      	ldr	r3, [r5, #0]
  8001636:	6023      	str	r3, [r4, #0]
-	  HAL_UART_Transmit(&huart2, (uint8_t*)Back, strlen(Back),10);
+	  HAL_UART_Transmit(&huart2, (uint8_t*)Back, strlen(Back),100);
  8001638:	1d3b      	adds	r3, r7, #4
  800163a:	4618      	mov	r0, r3
  800163c:	f7fe fdd0 	bl	80001e0 <strlen>
  8001640:	4603      	mov	r3, r0
  8001642:	b29a      	uxth	r2, r3
  8001644:	1d39      	adds	r1, r7, #4
- 8001646:	230a      	movs	r3, #10
+ 8001646:	2364      	movs	r3, #100	; 0x64
  8001648:	4804      	ldr	r0, [pc, #16]	; (800165c <Print_Back+0x38>)
  800164a:	f001 f938 	bl	80028be <HAL_UART_Transmit>
 

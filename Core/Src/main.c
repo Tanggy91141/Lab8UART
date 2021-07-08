@@ -450,23 +450,23 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 ////////////////////Print Menu////////////////////
 void Print_Main_Menu()
 {
-	  char Main_Menu[]="Main_Menu\r\n "
-			  "__press [0] for go to Menu_0\r\n "
+	  char Main_Menu[]="Main_Menu\r\n"
+			  "__press [0] for go to Menu_0\r\n"
 			  "__press [1] for go to Menu_1\r\n"
 			  "\r\n-----------------------------\r\n";
-	  HAL_UART_Transmit(&huart2, (uint8_t*)Main_Menu, strlen(Main_Menu),10);
+	  HAL_UART_Transmit(&huart2, (uint8_t*)Main_Menu, strlen(Main_Menu),100);
 
 }
 
 void Print_Menu_0()
 {
-	  char Menu_0[]="Menu_0\r\n "
-			  "__press [a] for Freq + 1Hz\r\n "
+	  char Menu_0[]="Menu_0\r\n"
+			  "__press [a] for Freq + 1Hz\r\n"
 			  "__press [s] for Freq - 1Hz\r\n"
 			  "__press [d] for on/off LED\r\n"
 			  "__press [x] for back to main menu\r\n"
 			  "\r\n-----------------------------\r\n";
-	  HAL_UART_Transmit(&huart2, (uint8_t*)Menu_0, strlen(Menu_0),10);
+	  HAL_UART_Transmit(&huart2, (uint8_t*)Menu_0, strlen(Menu_0),100);
 
 }
 
@@ -477,7 +477,7 @@ void Print_fq()
 
       //char fq[]= ("frequency of LED is: %d \r\n", Freq);
 	  sprintf(fq, "frequency of LED is: %d \r\n", Freq);
-	  HAL_UART_Transmit(&huart2, (uint8_t*)fq, strlen(fq),10);
+	  HAL_UART_Transmit(&huart2, (uint8_t*)fq, strlen(fq),100);
 
 }
 
@@ -486,12 +486,12 @@ void Print_OnOff()
 	if (LED_D == 0)
 	{
 		char D[]="LED is On\r\n";
-		HAL_UART_Transmit(&huart2, (uint8_t*)D, strlen(D),10);
+		HAL_UART_Transmit(&huart2, (uint8_t*)D, strlen(D),100);
 	}
 	else
 	{
 		char D[]="LED is Off\r\n";
-		HAL_UART_Transmit(&huart2, (uint8_t*)D, strlen(D),10);
+		HAL_UART_Transmit(&huart2, (uint8_t*)D, strlen(D),100);
 	}
 
 }
@@ -502,21 +502,21 @@ void Print_Menu_1()
 			  "__Show B1 state\r\n"
 			  "__press [x] for back to main menu\r\n"
 			  "\r\n-----------------------------\r\n";
-	  HAL_UART_Transmit(&huart2, (uint8_t*)Menu_1, strlen(Menu_1),10);
+	  HAL_UART_Transmit(&huart2, (uint8_t*)Menu_1, strlen(Menu_1),100);
 
 }
 
 void Print_Error()
 {
 	  char Eror[]="Error : Out of choice\r\n";
-	  HAL_UART_Transmit(&huart2, (uint8_t*)Eror, strlen(Eror),10);
+	  HAL_UART_Transmit(&huart2, (uint8_t*)Eror, strlen(Eror),100);
 
 }
 
 void Print_Back()
 {
 	  char Back[]="Back to main menu\r\n";
-	  HAL_UART_Transmit(&huart2, (uint8_t*)Back, strlen(Back),10);
+	  HAL_UART_Transmit(&huart2, (uint8_t*)Back, strlen(Back),100);
 
 }
 
