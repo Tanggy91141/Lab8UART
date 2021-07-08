@@ -23,7 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
-#include <string.h>
+#include <string.h>				//for use string
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -48,6 +48,8 @@ char TxDataBuffer[32] =
 { 0 };
 char RxDataBuffer[32] =
 { 0 };
+
+int16_t inputchar = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -104,27 +106,51 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 	while (1)
 	{
-		/*Method 1 Polling Mode*/
-
+		/*Method 1 Polling Mode*/			//BAD
 //		UARTRecieveAndResponsePolling();
 
 		/*Method 2 Interrupt Mode*/
 //		HAL_UART_Receive_IT(&huart2,  (uint8_t*)RxDataBuffer, 32);
 
 		/*Method 2 W/ 1 Char Received*/
-//		int16_t inputchar = UARTRecieveIT();
+//		int16_t inputchar = UARTRecieveIT();		//Focus on this character
 //		if(inputchar!=-1)
 //		{
-
 //			sprintf(TxDataBuffer, "ReceivedChar:[%c]\r\n", inputchar);
 //			HAL_UART_Transmit(&huart2, (uint8_t*)TxDataBuffer, strlen(TxDataBuffer), 1000);
 //		}
 
+//		/*This section just simmulate Work Load*/
+//		HAL_Delay(100);
+//		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+
+/////////////////////////////////////START///////////////////////////////////////
+
+//		HAL_UART_Receive_IT(&huart2,  (uint8_t*)RxDataBuffer, 32);
+
+//		inputchar = UARTRecieveIT();		//Focus on this character
+//		if(inputchar!=-1)
+//		{
+//			sprintf(TxDataBuffer, "ReceivedChar:[%c]\r\n", inputchar);
+//			HAL_UART_Transmit(&huart2, (uint8_t*)TxDataBuffer, strlen(TxDataBuffer), 1000);
+//
+//
+//
+//
+//
+//
+//
+//
+//		}
 
 
-		/*This section just simmulate Work Load*/
-		HAL_Delay(100);
-		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+
+
+
+
+
+
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
